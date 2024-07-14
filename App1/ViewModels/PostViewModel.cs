@@ -1,4 +1,5 @@
 ﻿using App1.Models;
+using System.Threading.Tasks;
 
 namespace App1.ViewModels
 {
@@ -16,7 +17,7 @@ namespace App1.ViewModels
                 NotifyPropertyChanged("Post", "Id", "Title", "Body", "UserId");
             }
         }
-        private Post post;
+        private Post post = new Post();
         public int Id
         {
             get
@@ -81,6 +82,20 @@ namespace App1.ViewModels
         public PostViewModel(Post postToSet)
         {
             Post = postToSet;
+        }
+        public PostViewModel(Task<Post> postToSet)
+        {
+            postToSet.ContinueWith(t =>
+            {
+                if (t.Status == TaskStatus.RanToCompletion)
+                {
+                    Post = t.Result;
+                }
+                else
+                {
+                    // Handle error
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

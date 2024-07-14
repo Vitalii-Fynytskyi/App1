@@ -3,8 +3,11 @@
     x:Class="App1.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:App1">
+    xmlns:local="using:App1"
+    xmlns:view="using:App1.Views"
+    xmlns:viewmodel="using:App1.ViewModels">
     <Application.Resources>
+        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />

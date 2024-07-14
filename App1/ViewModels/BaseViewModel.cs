@@ -22,7 +22,7 @@ namespace App1.ViewModels
             {
                 foreach (string propertyName in propertyNames)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
                 }
             }
         }

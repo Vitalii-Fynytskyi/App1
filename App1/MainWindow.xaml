@@ -6,9 +6,18 @@
     xmlns:local="using:App1"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="using:App1.Views"
+    xmlns:viewmodel="using:App1.ViewModels"
     mc:Ignorable="d">
-
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+    <Grid x:Name="rootGrid">
+        <Grid.Resources>
+            <DataTemplate x:Key="postsListTemplate" x:DataType="viewmodel:PostViewModel">
+                <ItemContainer>
+                    <view:PostView ViewModel="{Binding }"/>
+                </ItemContainer>
+            </DataTemplate>
+        </Grid.Resources>
+        <ItemsView x:Name="postsList" ItemsSource="{Binding Posts}" ItemTemplate="{StaticResource postsListTemplate}">
+        </ItemsView>
+    </Grid>
 </Window>
