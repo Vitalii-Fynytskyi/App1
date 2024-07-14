@@ -1,7 +1,9 @@
 ﻿using App1.Enums;
+using App1.Interfaces;
 using App1.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -13,64 +15,44 @@ namespace App1.ViewModels
         [ObservableProperty]
         private string selectedMedium;
         [ObservableProperty]
-        private ObservableCollection<MediaItem> items;
+        private ObservableCollection<MediaItem> items = new ObservableCollection<MediaItem>();
+        private ObservableCollection<MediaItem> allItems;
         [ObservableProperty]
-        private IList<string> mediums;
-
+        private ObservableCollection<string> mediums;
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
         private MediaItem selectedMediaItem;
+        private INavigationService _navigationService;
+        private IDataService _dataService;
+        private const string AllMediums = "All";
 
-        private ObservableCollection<MediaItem> allItems;
-        private int additionalItemCount = 1;
-
-        public MainViewModel()
+        public MainViewModel(INavigationService navigationService, IDataService dataService)
         {
+            _navigationService = navigationService;
+            _dataService = dataService;
             PopulateData();
         }
 
         public void PopulateData()
         {
-            var cd = new MediaItem
-            {
-                Id = 1,
-                Name = "Classical Favorites",
-                MediaType = ItemType.Music,
-                MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" }
-            };
+            Items.Clear();
 
-            var book = new MediaItem
+            foreach (var item in _dataService.GetItems())
             {
-                Id = 2,
-                Name = "Classic Fairy Tales",
-                MediaType = ItemType.Book,
-                MediumInfo = new Medium { Id = 2, MediaType = ItemType.Book, Name = "Book" }
-            };
-
-            var bluRay = new MediaItem
-            {
-                Id = 3,
-                Name = "The Mummy",
-                MediaType = ItemType.Video,
-                MediumInfo = new Medium { Id = 3, MediaType = ItemType.Video, Name = "Blu Ray" }
-            };
-
-            Items = new ObservableCollection<MediaItem>
-            {
-                cd,
-                book,
-                bluRay
-            };
+                Items.Add(item);
+            }
 
             allItems = new ObservableCollection<MediaItem>(Items);
 
-            Mediums = new List<string>
+            Mediums = new ObservableCollection<string>
             {
-                "All",
-                nameof(ItemType.Book),
-                nameof(ItemType.Music),
-                nameof(ItemType.Video)
+                AllMediums
             };
+
+            foreach (var itemType in _dataService.GetItemTypes())
+            {
+                Mediums.Add(itemType.ToString());
+            }
 
             SelectedMedium = Mediums[0];
         }
@@ -93,22 +75,14 @@ namespace App1.ViewModels
         [RelayCommand]
         public void AddEdit()
         {
-            // Note this is temporary until
-            // we use a real data source for items.
-            const int startingItemCount = 3;
+            var selectedItemId = -1;
 
-            var newItem = new MediaItem
+            if (SelectedMediaItem != null)
             {
-                Id = startingItemCount + additionalItemCount,
-                Location = LocationType.InCollection,
-                MediaType = ItemType.Music,
-                MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" },
-                Name = $"CD {additionalItemCount}"
-            };
+                selectedItemId = SelectedMediaItem.Id;
+            }
 
-            allItems.Add(newItem);
-            Items.Add(newItem);
-            additionalItemCount++;
+            _navigationService.NavigateTo("ItemDetailsPage", selectedItemId);
         }
 
         [RelayCommand(CanExecute = nameof(CanDeleteItem))]
@@ -136,7 +110,10 @@ namespace App1.ViewModels
 
             }
         }
-
+        public void ListViewDoubleTapped(object sender, DoubleTappedRoutedEventArgs args)
+        {
+            AddEdit();
+        }
         private bool CanDeleteItem() => SelectedMediaItem != null;
     }
 }

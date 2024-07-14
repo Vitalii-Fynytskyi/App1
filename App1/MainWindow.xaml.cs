@@ -1,6 +1,7 @@
 using App1.Enums;
 using App1.Models;
 using App1.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -24,6 +25,5 @@ namespace App1
         {
             this.InitializeComponent();
         }
-        public MainViewModel ViewModel => App.ViewModel;
     }
 }
