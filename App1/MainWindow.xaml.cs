@@ -1,5 +1,13 @@
+using App1.Enums;
+using App1.Models;
 using App1.ViewModels;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.UI.Popups;
+
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -12,14 +20,10 @@ namespace App1
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        
-        public PostsViewModel PostsViewModel { get; set; }
         public MainWindow()
         {
             this.InitializeComponent();
-            PostsViewModel = new PostsViewModel();
-            rootGrid.DataContext = PostsViewModel;
-            PostsViewModel.LoadPostsAsync();
         }
+        public MainViewModel ViewModel => App.ViewModel;
     }
 }

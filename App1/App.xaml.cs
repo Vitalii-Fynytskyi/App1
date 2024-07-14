@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using App1.ViewModels;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -26,6 +27,7 @@ namespace App1
     /// </summary>
     public partial class App : Application
     {
+        public static MainViewModel ViewModel { get; } = new MainViewModel();
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

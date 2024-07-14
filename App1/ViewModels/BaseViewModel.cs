@@ -30,5 +30,15 @@ namespace App1.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        protected bool SetProperty<T>(ref T originalValue, T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(originalValue, newValue))
+            {
+                return false;
+            }
+            originalValue = newValue;
+            NotifyPropertyChanged(propertyName);
+            return true;
+        }
     }
 }
