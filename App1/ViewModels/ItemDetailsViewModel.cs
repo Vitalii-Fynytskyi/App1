@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace App1.ViewModels
 {
@@ -26,7 +27,6 @@ namespace App1.ViewModels
         private string selectedItemType;
         [ObservableProperty]
         private string selectedLocation;
-
         [ObservableProperty]
         private bool isDirty;
         private int _selectedItemId = -1;
@@ -44,27 +44,7 @@ namespace App1.ViewModels
         public void InitializeItemDetailData(int itemId)
         {
             _selectedItemId = itemId;
-
-            PopulateExistingItem(_dataService);
             IsDirty = false;
-        }
-
-        private void PopulateExistingItem(IDataService dataService)
-        {
-            if (_selectedItemId > 0)
-            {
-                var item = _dataService.GetItem(_selectedItemId);
-                Mediums.Clear();
-
-                foreach (string medium in dataService.GetMediums(item.MediaType).Select(m => m.Name))
-                    Mediums.Add(medium);
-
-                _itemId = item.Id;
-                ItemName = item.Name;
-                SelectedMedium = item.MediumInfo.Name;
-                SelectedLocation = item.Location.ToString();
-                SelectedItemType = item.MediaType.ToString();
-            }
         }
 
         private void PopulateLists()
@@ -80,20 +60,20 @@ namespace App1.ViewModels
             Mediums = new ObservableCollection<string>();
         }
 
-        private void Save()
+        private async Task SaveAsync()
         {
             MediaItem item;
 
             if (_itemId > 0)
             {
-                item = _dataService.GetItem(_itemId);
+                item = await _dataService.GetItemAsync(_itemId);
 
                 item.Name = ItemName;
                 item.Location = (LocationType)Enum.Parse(typeof(LocationType), SelectedLocation);
                 item.MediaType = (ItemType)Enum.Parse(typeof(ItemType), SelectedItemType);
                 item.MediumInfo = _dataService.GetMedium(SelectedMedium);
 
-                _dataService.UpdateItem(item);
+                await _dataService.UpdateItemAsync(item);
             }
             else
             {
@@ -105,12 +85,13 @@ namespace App1.ViewModels
                     MediumInfo = _dataService.GetMedium(SelectedMedium)
                 };
 
-                _dataService.AddItem(item);
+                await _dataService.AddItemAsync(item);
             }
         }
-        public void SaveItemAndContinue()
+
+        public async Task SaveItemAndContinueAsync()
         {
-            Save();
+            await SaveAsync();
             _itemId = 0;
             ItemName = string.Empty;
             SelectedMedium = null;
@@ -118,14 +99,11 @@ namespace App1.ViewModels
             SelectedItemType = null;
             IsDirty = false;
         }
-        public void SaveItemAndReturn()
+
+        public async Task SaveItemAndReturnAsync()
         {
-            Save();
+            await SaveAsync();
             _navigationService.GoBack();
-        }
-        private bool CanSaveItem()
-        {
-            return IsDirty;
         }
 
         partial void OnItemNameChanged(string value)

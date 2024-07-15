@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace App1.ViewModels
@@ -30,14 +31,14 @@ namespace App1.ViewModels
         {
             _navigationService = navigationService;
             _dataService = dataService;
-            PopulateData();
+            PopulateDataAsync();
         }
 
-        public void PopulateData()
+        public async Task PopulateDataAsync()
         {
             Items.Clear();
 
-            foreach (var item in _dataService.GetItems())
+            foreach (var item in await _dataService.GetItemsAsync())
             {
                 Items.Add(item);
             }
@@ -86,7 +87,7 @@ namespace App1.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanDeleteItem))]
-        public void Delete()
+        public async Task DeleteAsync()
         {
 
             int index = -1;
@@ -98,6 +99,7 @@ namespace App1.ViewModels
                     break;
                 }
             }
+            await _dataService.DeleteItemAsync(SelectedMediaItem);
             allItems.Remove(SelectedMediaItem);
             Items.Remove(SelectedMediaItem);
             if (index - 1 >= 0)

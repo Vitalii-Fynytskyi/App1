@@ -26,7 +26,7 @@
             <TextBlock Text="Media Collection" Margin="4" FontWeight="Bold" VerticalAlignment="Center"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock Text="Media Type:" Margin="4" FontWeight="Bold" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{x:Bind ViewModel.Mediums}" SelectedItem="{x:Bind ViewModel.SelectedMedium, Mode=TwoWay}" MinWidth="120" Margin="0,2,6,4"/>
+                <ComboBox ItemsSource="{x:Bind ViewModel.Mediums, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedMedium, Mode=TwoWay}" MinWidth="120" Margin="0,2,6,4"/>
             </StackPanel>
         </Grid>
         <ListView Grid.Row="1" ItemsSource="{x:Bind ViewModel.Items}" SelectedItem="{x:Bind ViewModel.SelectedMediaItem, Mode=TwoWay}" Background="LightGoldenrodYellow" DoubleTapped="{x:Bind ViewModel.ListViewDoubleTapped}">
