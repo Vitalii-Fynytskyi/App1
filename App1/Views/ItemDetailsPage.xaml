@@ -54,7 +54,33 @@
             <ComboBox Grid.Row="3" Grid.Column="1" Style="{StaticResource AttributeComboxValueStyle}" ItemsSource="{x:Bind ViewModel.LocationTypes}" SelectedValue="{x:Bind ViewModel.SelectedLocation, Mode=TwoWay}"/>
         </Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-            <Button Content="Save" Margin="8,8,0,8" Command="{x:Bind ViewModel.SaveCommand}"/>
+            <SplitButton x:Name="SaveButton"
+                         Content="Save and Return"
+                         Margin="8,8,0,8"
+                         Click="{x:Bind ViewModel.SaveItemAndReturn}"
+                         IsEnabled="{x:Bind ViewModel.IsDirty, Mode=OneWay}">
+                <SplitButton.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <Button Content="Save and Create New"
+                                    Click="{x:Bind ViewModel.SaveItemAndContinue}"
+                                    IsEnabled="{x:Bind ViewModel.IsDirty, Mode=OneWay}"
+                                    Background="Transparent"/>
+                            <Button Content="Save and Return"
+                                    Click="{x:Bind ViewModel.SaveItemAndReturn}"
+                                    IsEnabled="{x:Bind ViewModel.IsDirty, Mode=OneWay}"
+                                    Background="Transparent"/>
+                        </StackPanel>
+                    </Flyout>
+                </SplitButton.Flyout>
+                <SplitButton.Resources>
+                    <TeachingTip x:Name="SavingTip"
+                                 Target="{x:Bind SaveButton}"
+                                 Title="Save and create new"
+                                 Subtitle="Use the dropdown button option to save your item and create another.">
+                    </TeachingTip>
+                </SplitButton.Resources>
+            </SplitButton>
             <Button Content="Cancel" Margin="8" Command="{x:Bind ViewModel.CancelCommand}"/>
         </StackPanel>
     </Grid>

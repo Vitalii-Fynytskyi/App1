@@ -30,6 +30,16 @@ namespace App1.Views
         {
             ViewModel = App.HostContainer.Services.GetService<ItemDetailsViewModel>();
             this.InitializeComponent();
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            // Load the user setting
+            string haveExplainedSaveSetting = localSettings.Values[nameof(SavingTip)] as string;
+            // If the user has not seen the save tip, display it
+            if (!bool.TryParse(haveExplainedSaveSetting, out bool result) || !result)
+            {
+                SavingTip.IsOpen = true;
+                // Save the teaching tip setting
+                localSettings.Values[nameof(SavingTip)] = "true";
+            }
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
